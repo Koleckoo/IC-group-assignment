@@ -5,7 +5,7 @@ import { TagCloud } from "react-tagcloud";
 function App() {
   const [movies, setMovies] = useState([]);
   const [search, setSearch] = useState([]);
-  const [searchedWords, setSearchedWords] = useState([]);
+  const [searchedWords, setSearchedWords] = useState(null);
 
   // on Click we invoke the handle submit function that fetches the data from the API based on search that is being updated by the handle change function
   // after fetch we set the fetched data to the movies state and the searchedWords state and load the movies
@@ -26,49 +26,72 @@ function App() {
     };
     // calling function loadMovies
     loadMovies();
-    // adding the search word into array of searched words
-    setSearchedWords([...searchedWords, search]);
+
+    const storeSearch = async () => {
+      try {
+        const response = await fetch(
+          `http://www.cbp-exercises.test/projects/ic-group/store.php`
+          , {
+            method: "POST",
+            headers: {
+              // 'Content-Type': 'multipart/form-data'
+            },
+            body: JSON.stringify({
+              "searched_word": search 
+            })
+          }
+
+
+          
+        );
+        // console.log(response)
+        const data = await response.json();
+        // console.log(data);
+        setSearchedWords(data);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    storeSearch();
   };
 
-  // using reduce method to iterate over the searchWords array and build up an array of objects with value and properties for the Tagcloud Component
-  // acc is the array that is build up on each iteration and val is the current value in the array
-  const counts = searchedWords.reduce((acc, val) => {
-    // if current value already exists in the array using find method
-    // we increment the count by one
-    const existing = acc.find((item) => item.value === val);
-    if (existing) {
-      existing.count++;
-      // if it doesnt we add a new object with the value property of the current value a set its count to 1
-    } else {
-      acc.push({ value: val, count: 1 });
-    }
-    return acc;
-  }, []);
-  // after building the array we sort the data from the one with highest count to the data with the lowest count
-  const data = counts.sort((a, b) => b.count - a.count);
+  
   // this function is invoked on every change of the input and setting the search to be used after click
   const handleChange = (e) => {
     setSearch(e.target.value);
   };
 
+  // creating new array that will store the object for the tagcloud
+  const dataForTagCloud = [];
+  // iterating over key-values of the original object and using object.entries 
+  // for each key-value pair we create a new object with value and count properties and the push into the array for tagcloud
+  if (searchedWords !== null) {
+    for (const [value, count] of Object.entries(searchedWords)) {
+    dataForTagCloud.push({value, count});
+  }
+  }
+
+
   return (
-    <div className="App">
-      <div className="header">
-        <h1>Movies list</h1>
-        <label htmlFor="search">Search movies by name:</label>
-        <br />
-        <input type="text" name="search" onChange={handleChange} />
-        <br />
-        <button type="submit" onClick={handleSubmit}>
-          Search
-        </button>
+    <div className="container-fluid mt-4">
+      <div className="row">
+        <div className="col text-center">
+          <h1>Movies list</h1>
+          <label htmlFor="search">Search movies by name:</label>
+          <br />
+          <input type="text" name="search" onChange={handleChange} />
+          <button type="submit" onClick={handleSubmit}>
+            Search
+          </button>
+        </div>
       </div>
+
       <div className="cloud">
         <TagCloud
           minSize={12}
           maxSize={50}
           rotate={90}
-          tags={counts}
+          tags={dataForTagCloud}
           style={{ width: 400, textAlign: "center" }}
         />
       </div>
