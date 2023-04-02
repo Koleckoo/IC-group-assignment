@@ -73,20 +73,22 @@ function App() {
 
 
   return (
-    <div className="container-fluid mt-4">
-      <div className="row">
-        <div className="col text-center">
-          <h1>Movies list</h1>
-          <label htmlFor="search">Search movies by name:</label>
-          <br />
-          <input type="text" name="search" onChange={handleChange} />
-          <button type="submit" onClick={handleSubmit}>
-            Search
-          </button>
+  <div className="container mt-4">
+      <div className="row justify-content-center">
+        <div className="col-lg-4 col-md-6 col-sm-8 text-center">
+          <h1 className="display-1 mb-4">Movies list</h1>
+          <form>
+            <div className="input-group mb-3">
+              <input type="text" placeholder="Search movies by name" className="form-control" name="search" onChange={handleChange} />
+              <button type="submit" className="btn btn-success btn-custom">
+                Search
+              </button>
+            </div>
+          </form>
         </div>
       </div>
 
-      <div className="cloud">
+      <div className="cloud my-4">
         <TagCloud
           minSize={12}
           maxSize={50}
@@ -95,23 +97,32 @@ function App() {
           style={{ width: 400, textAlign: "center" }}
         />
       </div>
-      <div className="movies">
-        {movies ? (
-          <div>
-            {movies.map((movie, index) => {
-              return (
-                <div key={index}>
-                  <div>{movie.Title}</div>
-                  <img src={movie.Poster} alt="" />
+
+      {movies ? (
+        <div className="row mt-4">
+          {movies.map((movie, index) => {
+            return (
+              <div className="col-lg-4 col-md-6 col-sm-12 text-center" key={index}>
+                <div className="card mb-4">
+                  <img className="card-img-top" src={movie.Poster} alt={`poster for ${movie.Title}`} />
+                  <div className="card-body">
+                    <h4 className="card-title mt-4">{movie.Title}</h4>
+                    <p className="card-text">Release year: {movie.Year}</p>
+                  </div>
                 </div>
-              );
-            })}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="d-flex justify-content-center mt-4">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden"></span>
           </div>
-        ) : (
-          <div>loading..</div>
-        )}
-      </div>
-    </div>
+        </div>
+    )}
+  </div>
+
   );
 }
 
