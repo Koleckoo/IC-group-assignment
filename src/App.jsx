@@ -80,7 +80,7 @@ function App() {
           <form>
             <div className="input-group mb-3">
               <input type="text" placeholder="Search movies by name" className="form-control" name="search" onChange={handleChange} />
-              <button type="submit" className="btn btn-success btn-custom">
+              <button type="submit" onClick={handleSubmit} className="btn btn-success btn-custom">
                 Search
               </button>
             </div>
