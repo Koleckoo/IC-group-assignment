@@ -30,19 +30,16 @@ function App() {
     const storeSearch = async () => {
       try {
         const response = await fetch(
-          `http://www.cbp-exercises.test/projects/ic-group/store.php`
-          , {
+          `http://www.cbp-exercises.test/projects/ic-group/store.php`,
+          {
             method: "POST",
             headers: {
               // 'Content-Type': 'multipart/form-data'
             },
             body: JSON.stringify({
-              "searched_word": search 
-            })
+              searched_word: search,
+            }),
           }
-
-
-          
         );
         // console.log(response)
         const data = await response.json();
@@ -55,7 +52,6 @@ function App() {
     storeSearch();
   };
 
-  
   // this function is invoked on every change of the input and setting the search to be used after click
   const handleChange = (e) => {
     setSearch(e.target.value);
@@ -63,24 +59,33 @@ function App() {
 
   // creating new array that will store the object for the tagcloud
   const dataForTagCloud = [];
-  // iterating over key-values of the original object and using object.entries 
+  // iterating over key-values of the original object and using object.entries
   // for each key-value pair we create a new object with value and count properties and the push into the array for tagcloud
   if (searchedWords !== null) {
     for (const [value, count] of Object.entries(searchedWords)) {
-    dataForTagCloud.push({value, count});
+      dataForTagCloud.push({ value, count });
+    }
   }
-  }
-
 
   return (
-  <div className="container mt-4">
+    <div className="container mt-4">
       <div className="row justify-content-center">
         <div className="col-lg-4 col-md-6 col-sm-8 text-center">
           <h1 className="display-1 mb-4">Movies list</h1>
           <form>
             <div className="input-group mb-3">
-              <input type="text" placeholder="Search movies by name" className="form-control" name="search" onChange={handleChange} />
-              <button type="submit" onClick={handleSubmit} className="btn btn-success btn-custom">
+              <input
+                type="text"
+                placeholder="Search movies by name"
+                className="form-control"
+                name="search"
+                onChange={handleChange}
+              />
+              <button
+                type="submit"
+                onClick={handleSubmit}
+                className="btn btn-success btn-custom"
+              >
                 Search
               </button>
             </div>
@@ -88,23 +93,31 @@ function App() {
         </div>
       </div>
 
-      <div className="cloud my-4">
-        <TagCloud
-          minSize={12}
-          maxSize={50}
-          rotate={90}
-          tags={dataForTagCloud}
-          style={{ width: 400, textAlign: "center" }}
-        />
+      <div className="row justify-content-center">
+        <div className="col-4 text-center my-4">
+          <TagCloud
+            minSize={12}
+            maxSize={50}
+            rotate={90}
+            tags={dataForTagCloud}
+            style={{ width: 400, textAlign: "center" }}
+          />
+        </div>
       </div>
-
       {movies ? (
         <div className="row mt-4">
           {movies.map((movie, index) => {
             return (
-              <div className="col-lg-4 col-md-6 col-sm-12 text-center" key={index}>
+              <div
+                className="col-lg-4 col-md-6 col-sm-12 text-center"
+                key={index}
+              >
                 <div className="card mb-4">
-                  <img className="card-img-top" src={movie.Poster} alt={`poster for ${movie.Title}`} />
+                  <img
+                    className="card-img-top"
+                    src={movie.Poster}
+                    alt={`poster for ${movie.Title}`}
+                  />
                   <div className="card-body">
                     <h4 className="card-title mt-4">{movie.Title}</h4>
                     <p className="card-text">Release year: {movie.Year}</p>
@@ -120,9 +133,8 @@ function App() {
             <span class="visually-hidden"></span>
           </div>
         </div>
-    )}
-  </div>
-
+      )}
+    </div>
   );
 }
 
